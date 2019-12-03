@@ -1,10 +1,7 @@
 import React, { Component } from "react";
 import CartScrollBar from "./CartScrollBar";
-import Counter from "./Counter";
 import EmptyCart from "../empty-states/EmptyCart";
 import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
-import { findDOMNode } from "react-dom";
-import { Link } from 'react-router-dom';
 
 
 class Header extends Component {
@@ -43,32 +40,7 @@ class Header extends Component {
       }
     );
   }
-  handleClickOutside(event) {
-    const cartNode = findDOMNode(this.refs.cartPreview);
-    const buttonNode = findDOMNode(this.refs.cartButton);
-    if (cartNode.classList.contains("active")) {
-      if (!cartNode || !cartNode.contains(event.target)) {
-        this.setState({
-          showCart: false
-        });
-        event.stopPropagation();
-      }
-    }
-  }
-  componentDidMount() {
-    document.addEventListener(
-      "click",
-      this.handleClickOutside.bind(this),
-      true
-    );
-  }
-  componentWillUnmount() {
-    document.removeEventListener(
-      "click",
-      this.handleClickOutside.bind(this),
-      true
-    );
-  }
+
   render() {
     let cartItems;
     cartItems = this.state.cart.map(product => {
@@ -212,7 +184,7 @@ class Header extends Component {
               <CartScrollBar>{view}</CartScrollBar>
               <div className="action-block">
                 <button
-                onClick={() => this.props.history.push('/test')}
+                onClick={() => this.props.history.push('/cart')}
                   type="button"
                   className={this.state.cart.length > 0 ? " " : "disabled"}
                   disabled={this.state.cart.length > 0 ?false: true}

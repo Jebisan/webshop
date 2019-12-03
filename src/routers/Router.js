@@ -1,6 +1,6 @@
 import React from "react";
 import { Router, Route, Switch } from 'react-router-dom';
-import Test from '../components/Test';
+import Cart from '../components/Cart';
 import App from '../components/App';
 import createHistory from 'history/createBrowserHistory';
 
@@ -15,7 +15,7 @@ const MyRouter = () => (
 
     <Switch>
       <Route path="/" component={App} exact={true} />
-      <Route path="/test" component={Test} exact={true} />
+      <Route path="/cart" component={Cart} exact={true} />
     </Switch>
 
   </Router>

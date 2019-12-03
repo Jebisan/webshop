@@ -61,7 +61,6 @@ class App extends Component {
   // Filter by Category
   handleCategory(event) {
     this.setState({ category: event.target.value });
-    console.log(this.state.category);
   }
   // Add to Cart
   handleAddToCart(selectedProducts) {
@@ -69,7 +68,6 @@ class App extends Component {
     let productID = selectedProducts.id;
     let productQty = selectedProducts.quantity;
     if (this.checkProduct(productID)) {
-      console.log("hi");
       let index = cartItem.findIndex(x => x.id == productID);
       cartItem[index].quantity =
         Number(cartItem[index].quantity) + Number(productQty);
@@ -89,8 +87,8 @@ class App extends Component {
           cartBounce: false,
           quantity: 1
         });
-        console.log(this.state.quantity);
-        console.log(this.state.cart);
+        //console.log(this.state.quantity);
+        //console.log(this.state.cart);
       }.bind(this),
       1000
     );
