@@ -6,12 +6,7 @@ class CartScrollBar extends Component {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
   }
-  componentDidMount() {
-    window.addEventListener("scroll", this.handleScroll);
-  }
-  componentWillUnmount() {
-    window.removeEventListener("scroll", this.handleScroll);
-  }
+
   handleScroll(event) {
     const positions = this.refs.scrollbars.getValues();
     //When the bottom is reached and we're scrolling down, prevent scrolling of the window
