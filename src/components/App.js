@@ -39,10 +39,10 @@ class App extends Component {
   // Fetch Initial Set of Products from external API
   getProducts() {
     let url =
-      "http://dj-resound.com/babysam.json";
+      "http://127.0.0.1:44358/api/product?link=https://www.babysam.dk/feeds/googleshopping.xml&start=0&amount=20";
     axios.get(url).then(response => {
       this.setState({
-        products: response.data
+        products: response.data.result
       });
     });
   }
@@ -88,7 +88,7 @@ class App extends Component {
           quantity: 1
         });
         //console.log(this.state.quantity);
-        //console.log(this.state.cart);
+        console.log(this.state.cart);
       }.bind(this),
       1000
     );

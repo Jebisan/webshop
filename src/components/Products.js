@@ -23,11 +23,13 @@ class Products extends Component {
       .map(product => {
         return (
           <Product
+          
             key={product.id}
             price={parseFloat(product.price).toFixed(2)}
             name={product.title}
             image={product.image_link}
             id={product.id}
+
             addToCart={this.props.addToCart}
             productQuantity={this.props.productQuantity}
             updateQuantity={this.props.updateQuantity}
