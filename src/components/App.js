@@ -10,6 +10,8 @@ import { connect } from 'react-redux';
 import {startUpdateCart} from '../actions/cardItems';
 import {startUpdateAmount} from '../actions/cardInfo';
 import {startUpdateProducts} from '../actions/products'
+import Select from 'react-select'
+
 
 class App extends Component {
   constructor() {
@@ -24,7 +26,8 @@ class App extends Component {
       cartBounce: false,
       quantity: 1,
       quickViewProduct: {},
-      modalActive: false
+      modalActive: false,
+      selectedOption: 8,
     };
     this.handleSearch = this.handleSearch.bind(this);
     this.handleMobileSearch = this.handleMobileSearch.bind(this);
@@ -50,14 +53,15 @@ componentDidMount(){
 
    if(this.state.cart.length===0) {
       this.sumTotalAmount(this.props.cart)
-   }
+    }
    }
 
   // Fetch Initial Set of Products from external API
-  getProducts() {
-    let url =
-      "http://127.0.0.1:44358/api/product?link=https://www.babysam.dk/feeds/googleshopping.xml&start=0&amount=8";
-    axios.get(url).then(response => {
+  getProducts(number=8) {
+    console.log("Getting products..")
+    axios.get(
+      "http://127.0.0.1:44358/api/product?link=https://www.babysam.dk/feeds/googleshopping.xml&start=0&amount="+number
+      ).then(response => {
       this.setState({
         products: response.data.result
       });
@@ -154,7 +158,6 @@ componentDidMount(){
 
   //Reset Quantity
   updateQuantity(qty) {
-    console.log("quantity added...");
     this.setState({
       quantity: qty
     });
@@ -173,9 +176,25 @@ componentDidMount(){
     });
   }
 
+
+  handleNumberOfProductsChange = selectedOption => {
+    let number = selectedOption.value
+    this.setState({products:[]})
+    this.getProducts(number)
+  };
+
   render() {
+    const { selectedOption } = this.state;
+    const options = [
+      { value: '8', label: '8' },
+      { value: '16', label: '16' },
+      { value: '32', label: '32' },
+      { value: '64', label: '64' },
+      { value: '128', label: '128' }
+    ]
     return (
-      <div className="container">some
+      <div className="container">
+
      <Header
           cartBounce={this.state.cartBounce}
           total={this.state.totalAmount}
@@ -189,7 +208,15 @@ componentDidMount(){
           updateQuantity={this.updateQuantity}
           productQuantity={this.state.moq}
           history = {this.props.history}
-        />
+        /> 
+        
+        <Select className = "select-wrapper"
+        placeholder="Antal produkter"
+        value={selectedOption}
+        onChange={this.handleNumberOfProductsChange}
+        options={options}
+      />
+       
 
         <Products
           productsList={this.state.products}
@@ -200,7 +227,9 @@ componentDidMount(){
           openModal={this.openModal}
         />
 
-        <button onClick={() => console.log(this.props.state)} >LOG REDUX</button>
+     
+
+    {/*    <button onClick={() => console.log(this.props.state)} >LOG REDUX</button>*/}
 
         <Footer />
         <QuickView
