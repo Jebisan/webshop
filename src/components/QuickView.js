@@ -5,7 +5,7 @@ class QuickView extends Component {
   constructor(props) {
     super(props);
   }
-  componentDidMount() {
+  UNSAFE_componentDidMount() {
     document.addEventListener(
       "click",
       this.handleClickOutside.bind(this),
@@ -13,7 +13,7 @@ class QuickView extends Component {
     );
   }
 
-  componentWillUnmount() {
+  UNSAFE_componentWillUnmount() {
     document.removeEventListener(
       "click",
       this.handleClickOutside.bind(this),

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Product from "./Product";
 import LoadingProducts from "../loaders/Products";
 import NoResults from "../empty-states/NoResults";
-import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
+import { CSSTransitionGroup } from 'react-transition-group'
 
 class Products extends Component {
   constructor() {
@@ -45,19 +45,9 @@ class Products extends Component {
     } else if (productsData.length <= 0 && term) {
       view = <NoResults />;
     } else {
-      view = (
-        <CSSTransitionGroup
-          transitionName="fadeIn"
-          transitionEnterTimeout={500}
-          transitionLeaveTimeout={300}
-          component="div"
-          className="products"
-        >
-          {productsData}
-        </CSSTransitionGroup>
-      );
+      view = productsData;
     }
-    return <div className="products-wrapper">{view}</div>;
+    return <div className="products-wrapper"> <div className="products">{view}</div> </div>;
   }
 }
 

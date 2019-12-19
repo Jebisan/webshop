@@ -4,6 +4,8 @@ import ReactTable from 'react-table'
 import 'react-table/react-table.css'
 import {columns} from './data'
 import axios from 'axios'
+import {NavLink} from 'react-router-dom';
+
 
 
 
@@ -11,6 +13,7 @@ class Cart extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      totalAmount: 0,
       obj:{
         data : []
       }
@@ -18,9 +21,9 @@ class Cart extends Component {
     };
   }
 
+
   print = () => {
     console.log("Printing..")
-
       this.props.cart.forEach(product => {
         this.state.obj.data.push(
           {
@@ -33,10 +36,7 @@ class Cart extends Component {
           }
         )
       });
-    
-
     console.log(this.state.data)
-
     axios.post('http://127.0.0.1:44358/api/Receipt/Add', this.state.obj)
     .then(function (response) {
       console.log(response);
@@ -44,8 +44,6 @@ class Cart extends Component {
     .catch(function (error) {
       console.log(error);
     });
-
-
   }
 
   
@@ -58,16 +56,32 @@ render() {
     data={this.props.cart}
     columns={columns}
   />
-  <button onClick={this.print}>Betal</button>
+  
+  <NavLink 
+                to="/" 
+                activeClassName="is-active"
+                className="backButton"
+                disabled={this.props.cart.length > 0 ?false: true}
+                >
+                  BACK
+                  </NavLink>
+  <button className="backButton" onClick={() => this.props.history.push("/")}>Back</button>
+  <button className="payButton" onClick={this.print}>Betal</button>
+
+
+
+
+  
+  <h3>Total amount: {this.props.amount.toFixed(2)} DKK</h3>
   </div>
   )
-}
-
+  }
 }
 
 const mapStateToProps = state => {
   return {
-      cart: state.cartItems
+      cart: state.cartItems,
+      amount: state.cartInfo
 }
 };
 

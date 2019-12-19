@@ -1,5 +1,5 @@
-// UPDATE CAART
-export const startAddToCart = (cart) => ({
-    type: 'ADD_TO_CART',
+// UPDATE CART
+export const startUpdateCart = (cart) => ({
+    type: 'UPDATE_CART',
     cart
 });

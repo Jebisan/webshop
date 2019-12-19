@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import CartScrollBar from "./CartScrollBar";
 import EmptyCart from "../empty-states/EmptyCart";
-import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
+import { connect } from 'react-redux';
+import {NavLink} from 'react-router-dom';
+
 
 
 class Header extends Component {
@@ -9,7 +11,7 @@ class Header extends Component {
     super(props);
     this.state = {
       showCart: false,
-      cart: this.props.cartItems,
+     // cart: this.props.cartItems,
       mobileSearch: false
     };
   }
@@ -39,12 +41,17 @@ class Header extends Component {
         this.props.handleMobileSearch();
       }
     );
+  } 
+
+  navigateToCart = () => {
+    
   }
 
   render() {
     let cartItems;
-    cartItems = this.state.cart.map(product => {
+    cartItems = this.props.cart.map(product => {
       return (
+        
         <li className="cart-item" key={product.name}>
           <img className="product-image" src={product.image} />
           <div className="product-info">
@@ -55,14 +62,13 @@ class Header extends Component {
             <p className="quantity">
               {product.quantity} {product.quantity > 1 ? "stk." : "stk."}{" "}
             </p>
-            <p className="amount">{product.quantity * product.price} DKK</p>
+            <p className="amount">{parseFloat(product.quantity * product.price).toFixed(2)} DKK</p>
           </div>
           <a
             className="product-remove"
             href="#"
             onClick={this.props.removeProduct.bind(this, product.id)}
-          >
-            ×
+          >x
           </a>
         </li>
       );
@@ -71,16 +77,7 @@ class Header extends Component {
     if (cartItems.length <= 0) {
       view = <EmptyCart />;
     } else {
-      view = (
-        <CSSTransitionGroup
-          transitionName="fadeIn"
-          transitionEnterTimeout={500}
-          transitionLeaveTimeout={300}
-          component="ul"
-          className="cart-items"
-        >
-          {cartItems}
-        </CSSTransitionGroup>
+      view = (cartItems
       );
     }
     return (
@@ -90,7 +87,7 @@ class Header extends Component {
             <img
               className="logo"
               src="https://tryg.dk/sites/default/files/2018-11/babysam.png"
-              alt="Veggy Brand Logo"
+              alt="Babysam Logo"
             />
           </div>
 
@@ -136,7 +133,6 @@ class Header extends Component {
               />
             </form>
           </div>
-
           <div className="cart">
             <div className="cart-info">
               <table>
@@ -145,14 +141,14 @@ class Header extends Component {
                     <td>Antal varer</td>
                     <td>:</td>
                     <td>
-                      <strong>{this.props.totalItems}</strong>
+                      <strong>{this.props.cart.length}</strong>
                     </td>
                   </tr>
                   <tr>
                     <td>Subtotal</td>
                     <td>:</td>
                     <td>
-                      <strong>{(this.props.total).toFixed(2)} DKK</strong>
+                      <strong>{this.props.total} DKK</strong>
                     </td>
                   </tr>
                 </tbody>
@@ -169,8 +165,8 @@ class Header extends Component {
                 src="http://dj-resound.com/bag.png"
                 alt="Cart"
               />
-              {this.props.totalItems ? (
-                <span className="cart-count">{this.props.totalItems}</span>
+              {this.props.cart.length ? (
+                <span className="cart-count">{this.props.cart.length}</span>
               ) : (
                 ""
               )}
@@ -181,17 +177,17 @@ class Header extends Component {
               }
               ref="cartPreview"
             >
-              <CartScrollBar>{view}</CartScrollBar>
+            <CartScrollBar>{view}</CartScrollBar>
               <div className="action-block">
                 <button
                 onClick={() => this.props.history.push('/cart')}
                   type="button"
-                  className={this.state.cart.length > 0 ? " " : "disabled"}
-                  disabled={this.state.cart.length > 0 ?false: true}
+                  className={this.props.cart.length > 0 ? " " : "disabled"}
+                  disabled={this.props.cart.length > 0 ?false: true}
                 >
                   FORTSÆT TIL CHECKOUT
                 </button>
-              </div>
+                </div>
             </div>
           </div>
         </div>
@@ -200,4 +196,12 @@ class Header extends Component {
   }
 }
 
-export default Header;
+const mapStateToProps = state => {
+  return {
+      cart: state.cartItems,
+      redux: state,
+    //  amount: state.cartInfo
+}
+};
+
+export default connect(mapStateToProps)(Header);

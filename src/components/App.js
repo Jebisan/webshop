@@ -7,7 +7,9 @@ import Footer from "./Footer";
 import QuickView from "./QuickView";
 import "../scss/style.scss";
 import { connect } from 'react-redux';
-import {startAddToCart} from '../actions/cardItems';
+import {startUpdateCart} from '../actions/cardItems';
+import {startUpdateAmount} from '../actions/cardInfo';
+import {startUpdateProducts} from '../actions/products'
 
 class App extends Component {
   constructor() {
@@ -36,18 +38,31 @@ class App extends Component {
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
   }
+
+componentDidMount(){
+  if(this.props.products.length===0){
+    this.getProducts();
+  } else {
+    this.setState({
+      products: this.props.products
+    });  }
+   
+
+   if(this.state.cart.length===0) {
+      this.sumTotalAmount(this.props.cart)
+   }
+   }
+
   // Fetch Initial Set of Products from external API
   getProducts() {
     let url =
-      "http://127.0.0.1:44358/api/product?link=https://www.babysam.dk/feeds/googleshopping.xml&start=0&amount=20";
+      "http://127.0.0.1:44358/api/product?link=https://www.babysam.dk/feeds/googleshopping.xml&start=0&amount=8";
     axios.get(url).then(response => {
       this.setState({
         products: response.data.result
       });
-    });
-  }
-  UNSAFE_componentWillMount() {
-    this.getProducts();
+      this.props.startUpdateProducts(response.data.result)
+    })
   }
 
   // Search by Keyword
@@ -63,7 +78,7 @@ class App extends Component {
     this.setState({ category: event.target.value });
   }
   // Add to Cart
-  handleAddToCart(selectedProducts) {
+  handleAddToCart = (selectedProducts) => {
     let cartItem = this.state.cart;
     let productID = selectedProducts.id;
     let productQty = selectedProducts.quantity;
@@ -87,16 +102,14 @@ class App extends Component {
           cartBounce: false,
           quantity: 1
         });
-        //console.log(this.state.quantity);
-        console.log(this.state.cart);
       }.bind(this),
       1000
     );
     this.sumTotalItems(this.state.cart);
     this.sumTotalAmount(this.state.cart);
-    this.props.startAddToCart(this.state.cart);
-
+    this.props.startUpdateCart(this.state.cart)
   }
+  
   handleRemoveProduct(id, e) {
     let cart = this.state.cart;
     let index = cart.findIndex(x => x.id == id);
@@ -106,7 +119,9 @@ class App extends Component {
     });
     this.sumTotalItems(this.state.cart);
     this.sumTotalAmount(this.state.cart);
+
     e.preventDefault();
+    
   }
   checkProduct(productID) {
     let cart = this.state.cart;
@@ -114,6 +129,7 @@ class App extends Component {
       return item.id === productID;
     });
   }
+  
   sumTotalItems() {
     let total = 0;
     let cart = this.state.cart;
@@ -122,16 +138,19 @@ class App extends Component {
       totalItems: total
     });
   }
-  sumTotalAmount() {
+  
+  sumTotalAmount(cart) {
     let total = 0;
-    let cart = this.state.cart;
+
     for (var i = 0; i < cart.length; i++) {
       total += cart[i].price * parseInt(cart[i].quantity);
     }
-    this.setState({
-      totalAmount: total
-    });
+      this.setState({totalAmount:total})
+      this.props.startUpdateAmount(total)
+
+      return total
   }
+
 
   //Reset Quantity
   updateQuantity(qty) {
@@ -156,12 +175,12 @@ class App extends Component {
 
   render() {
     return (
-      <div className="container">
-        <Header
+      <div className="container">some
+     <Header
           cartBounce={this.state.cartBounce}
           total={this.state.totalAmount}
           totalItems={this.state.totalItems}
-          cartItems={this.state.cart}
+          cart={this.state.cart}
           removeProduct={this.handleRemoveProduct}
           handleSearch={this.handleSearch}
           handleMobileSearch={this.handleMobileSearch}
@@ -171,6 +190,7 @@ class App extends Component {
           productQuantity={this.state.moq}
           history = {this.props.history}
         />
+
         <Products
           productsList={this.state.products}
           searchTerm={this.state.term}
@@ -179,6 +199,9 @@ class App extends Component {
           updateQuantity={this.updateQuantity}
           openModal={this.openModal}
         />
+
+        <button onClick={() => console.log(this.props.state)} >LOG REDUX</button>
+
         <Footer />
         <QuickView
           product={this.state.quickViewProduct}
@@ -191,7 +214,18 @@ class App extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  startAddToCart: (cart) => dispatch(startAddToCart(cart))
+  startUpdateCart: (cart) => dispatch(startUpdateCart(cart)),
+  startUpdateAmount: (amount) => dispatch(startUpdateAmount(amount)),
+  startUpdateProducts: (products) => dispatch(startUpdateProducts(products))
 });
 
-export default connect(null, mapDispatchToProps)(App);
+const mapStateToProps = state => {
+  return {
+      cart: state.cartItems,
+      amount: state.amount,
+      products: state.products,
+      state: state
+}
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
