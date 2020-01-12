@@ -211,7 +211,7 @@ componentDidMount(){
         /> 
         
         <Select className = "select-wrapper"
-        placeholder="Antal produkter"
+        placeholder="Antal"
         value={selectedOption}
         onChange={this.handleNumberOfProductsChange}
         options={options}

@@ -9,6 +9,7 @@ import {NavLink} from 'react-router-dom';
 
 
 
+
 class Cart extends Component {
   constructor(props) {
     super(props);
@@ -53,8 +54,8 @@ render() {
    <ReactTable
    showPagination={false}
    defaultPageSize={this.props.cart.length}
-    data={this.props.cart}
-    columns={columns}
+   data={this.props.cart}
+   columns={columns}
   />
   
   <NavLink 
@@ -72,7 +73,7 @@ render() {
 
 
   
-  <h3>Total amount: {this.props.amount.toFixed(2)} DKK</h3>
+  <h3 className = "totalAmount" >Total: {this.props.amount.toFixed(2)} DKK</h3>
   </div>
   )
   }

@@ -148,7 +148,7 @@ class Header extends Component {
                     <td>Subtotal</td>
                     <td>:</td>
                     <td>
-                      <strong>{this.props.total} DKK</strong>
+                      <strong>{(this.props.total).toFixed(2)} DKK</strong>
                     </td>
                   </tr>
                 </tbody>
